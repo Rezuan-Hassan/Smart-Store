@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Store - Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --brand-green: #00b074;
+            --brand-green-light: #e6f7f1;
+            --brand-green-dark: #009660;
+        }
+        .text-brand { color: var(--brand-green); }
+        .bg-brand { background-color: var(--brand-green); }
+        .bg-brand-hover:hover { background-color: var(--brand-green-dark); }
+        .bg-brand-light { background-color: var(--brand-green-light); }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+    </style>
+</head>
+<body class="bg-gray-50 h-screen flex overflow-hidden text-gray-800">
+
+    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col hidden md:flex z-20">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200">
+            <i class="ph-fill ph-storefront text-3xl text-brand mr-2"></i>
+            <span class="text-xl font-bold tracking-tight">Smart-Store</span>
+        </div>
+
+        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            <a href="dashboard.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition-colors" onclick="navigate(event, 'dashboard.html')">
+                <i class="ph ph-squares-four text-xl mr-3"></i>
+                Dashboard
+            </a>
+            <a href="products.html" class="flex items-center px-4 py-3 bg-brand-light text-brand rounded-xl font-medium transition-colors" onclick="navigate(event, 'products.html')">
+                <i class="ph-fill ph-package text-xl mr-3"></i>
+                Products
+            </a>
+            <a href="sales.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition-colors" onclick="navigate(event, 'sales.html')">
+                <i class="ph ph-receipt text-xl mr-3"></i>
+                Sales
+            </a>
+            
+        </nav>
+
+        <div class="p-4 border-t border-gray-200">
+            <button id="logoutBtn" class="flex items-center w-full px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl font-medium transition-colors">
+                <i class="ph ph-sign-out text-xl mr-3"></i>
+                Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 z-10">
+            <div class="flex items-center">
+                <button class="md:hidden text-gray-500 hover:text-gray-700 mr-4">
+                    <i class="ph ph-list text-2xl"></i>
+                </button>
+                <h2 class="text-xl font-semibold hidden sm:block">Inventory</h2>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors">
+                    <i class="ph ph-bell text-xl"></i>
+                </button>
+                <div class="flex items-center space-x-2 cursor-pointer p-1 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="w-8 h-8 rounded-full bg-brand-light flex items-center justify-center text-lg">👨‍💼</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Products</h1>
+                    <p class="text-gray-500 text-sm mt-1">Manage your store inventory</p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                    <div class="relative w-full sm:w-64">
+                        <i class="ph ph-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Search products..." class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm">
+                    </div>
+                    <button onclick="openProductModal()" class="bg-brand hover:bg-brand-hover text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center shadow-sm">
+                        <i class="ph ph-plus font-bold mr-2"></i> Add Product
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-gray-50 border-b border-gray-200 text-gray-600 font-medium">
+                            <tr>
+                                <th class="px-6 py-4">Product Name</th>
+                                <th class="px-6 py-4">Category</th>
+                                <th class="px-6 py-4">Price</th>
+                                <th class="px-6 py-4">Stock</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody" class="divide-y divide-gray-100 text-gray-700">
+                            </tbody>
+                    </table>
+                </div>
+                <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between text-sm text-gray-500">
+                    <span>Firebase Real-time Sync Active</span>
+                    <div class="flex space-x-1">
+                        <button class="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50">Previous</button>
+                        <button class="px-3 py-1 bg-brand text-white rounded">1</button>
+                        <button class="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="productModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 id="modalTitle" class="text-lg font-bold text-gray-800">Add New Product</h3>
+                <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-700 transition-colors">
+                    <i class="ph ph-x text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="productForm" onsubmit="saveProduct(event)" class="space-y-4">
+                    <input type="hidden" id="productId"> <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+                        <input type="text" id="prodName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand" placeholder="e.g. Samsung Galaxy S23">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">SKU</label>
+                            <input type="text" id="prodSku" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand" placeholder="e.g. SAM-S23">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                            <input type="text" id="prodCategory" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand" placeholder="e.g. Electronics">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
+                            <input type="number" id="prodPrice" step="0.01" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand" placeholder="0.00">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
+                            <input type="number" id="prodStock" required min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-end space-x-3">
+                        <button type="button" onclick="closeProductModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand-hover transition-colors shadow-sm">Save Product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

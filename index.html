@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Store - Loading</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        /* Custom Brand Colors */
+        :root {
+            --brand-green: #00b074;
+        }
+        .text-brand { color: var(--brand-green); }
+        .bg-brand { background-color: var(--brand-green); }
+    </style>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+
+    <div class="text-center flex flex-col items-center">
+        <!-- Store Icon -->
+        <i class="ph-fill ph-storefront text-7xl text-brand mb-4 animate-bounce"></i>
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">Smart-Store</h1>
+        <div id="action-container" class="flex items-center justify-center space-x-2 text-gray-500 mt-4 min-h-[40px]">
+            <i class="ph ph-spinner-gap animate-spin text-xl"></i>
+            <span>Checking authentication...</span>
+        </div>
+    </div>
+
+    <script type="module">
+        window.onload = () => {
+            setTimeout(() => {
+                try {
+                    // This can fail in some sandboxed preview environments (like iframes with blob/data URIs)
+                    // If it fails, the catch block will provide a fallback UI
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.log("Automatic redirect blocked by sandboxed environment. Showing fallback UI.");
+                    
+                    const container = document.getElementById('action-container');
+                    container.innerHTML = `
+                        <div class="flex flex-col items-center space-y-3">
+                            <p class="text-sm text-gray-500">Preview mode active. Where to next?</p>
+                            <button onclick="alert('In a real browser environment, you would be redirected to login.html.')" 
+                                class="bg-brand text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-all flex items-center shadow-md">
+                                <span>Go to Login Screen</span>
+                                <i class="ph ph-arrow-right ml-2 text-lg"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+            }, 1500);
+        };
+    </script>
+</body>
+</html>
